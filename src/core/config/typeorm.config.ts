@@ -1,7 +1,5 @@
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModuleAsyncOptions, TypeOrmModuleOptions } from '@nestjs/typeorm';
-import { Admin } from 'src/module/admin/entities';
-import { Organization } from 'src/module/admin/entities/organization.entity';
 
 import { User } from 'src/module/user/user.entity';
 
@@ -13,12 +11,13 @@ export default class TypeOrmConfig {
       type: 'mysql',
       host: configService.get('database.host'),
       port: configService.get<number | undefined>('database.port'),
-      database: "test2",
+      database: configService.get('database.name'),
       username: configService.get('database.username'),
       password: configService.get('database.password'),
       entities: [
+        User
       ],
-      // synchronize: isDevelopmentEnv,
+      synchronize: true,
       logging: isDevelopmentEnv,
       supportBigNumbers: true,
       bigNumberStrings: false,
