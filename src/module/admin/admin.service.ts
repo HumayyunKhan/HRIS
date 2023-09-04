@@ -1,16 +1,23 @@
 import { Injectable } from '@nestjs/common';
-import { updateDb } from 'src/core/config/mysqlImporter';
-import { getManager } from 'typeorm';
-import { ROLE } from '../../shared';
 import { AuthService } from '../auth';
-
+import { UserService } from '../user';
+import { rolePayload } from './dtos/role.dto';
 // import { OrganizationRepository, AdminRepository } from './repositories';
 
 @Injectable()
 export class AdminService {
+  async createUserRole(body:rolePayload) {
+    const {userId,role}=body
+    console.log(userId,role)
+return await this.userService.createUserRole(userId,role)
+    
+  }
   constructor(
     private readonly authService: AuthService,
+    private readonly userService: UserService
 
   ) {}
+
+
 
 }

@@ -1,6 +1,9 @@
 export enum ROLE {
   ADMIN = 'ADMIN',
-  ORGANIZATION = 'ORGANIZATION',
-  DOCTOR = 'DOCTOR',
-  ASSISTANT = 'ASSISTANT',
+  EMPLOYEE="EMPLOYEE",
+  CONTRACTOR="CONTRACTOR",
+  MANAGER="MANAGER",
+
 }
+
+// ●	Employees, Contractors, and Managers 

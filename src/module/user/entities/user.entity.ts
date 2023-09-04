@@ -1,6 +1,7 @@
-import { BaseEntity } from '../../core/entity/base.entity';
-import { BeforeInsert, Column, Entity } from 'typeorm';
-import { ROLE } from '../../shared';
+import { BaseEntity } from '../../../core/entity/base.entity';
+import { BeforeInsert, Column, Entity, OneToMany } from 'typeorm';
+import { ROLE } from '../../../shared';
+import { UserRoles } from './user.roles.entity';
 
 @Entity({ name: 'users' })
 export class User extends BaseEntity {
@@ -34,15 +35,10 @@ export class User extends BaseEntity {
   @Column({ type: 'varchar', length: 255, default: '', nullable: true })
   country: string;
 
-  @Column({ type: 'varchar', length: 255, unique: true, nullable: true, name: 'user_id' })
-  userId: string;
 
+  @OneToMany(() => UserRoles, (role) => role.user) 
+  roles: UserRoles[]
 
-  @Column({
-    type: 'enum',
-    enum: [ROLE.ASSISTANT, ROLE.DOCTOR],
-  })
-  role: string;
 
   @BeforeInsert()
   emailToLowerCase() {

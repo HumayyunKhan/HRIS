@@ -1,17 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { NotFoundException, ROLE } from '../../../src/shared';
 import { CreateUserDto, UserDto, VerifyUserDto } from './dtos';
-import { User } from './user.entity';
-import { UserRepository } from './user.repository';
+import { User } from './entities/user.entity';
+import { UserRepository } from './repositories/user.repository';
 import * as bcrypt from 'bcrypt';
+import { UserRoleRepository } from './repositories/user.role.repository';
 
 @Injectable()
 export class UserService {
   test(req: any) {
     return {data:"HELLO WORLD",message:"ITS WORKS FOR THIS ROUTE"}
-    // throw new Error('Method not implemented.');
+    // throw new Error('Method not implemented.'); 
   }
-  constructor(private readonly userRepository: UserRepository) {}
+  constructor(private readonly userRepository: UserRepository,
+    private readonly userRoleRepository: UserRoleRepository) {}
 
   async createAndGetUser(verifyUserDto: VerifyUserDto): Promise<User> {
     let user = await this.findByPhoneNumber(verifyUserDto.phone);
@@ -32,19 +34,15 @@ export class UserService {
       throw { message: `User Already exists with same email!`, status: 400 };
     }
 
-    const userIdExist = await this.userRepository.findOne({ userId: createUserDto.userId });
 
-    if (userIdExist) {
-      throw { message: `User Already exists with same userId!`, status: 400 };
-    }
     console.log("CLOSE TO  USER CRAETION")
     createUserDto.role = ROLE[createUserDto.role];
-    createUserDto.password = await this.hashPassword(createUserDto.password);
+    // createUserDto.password = await this.hashPassword(createUserDto.password);
     const user=this.userRepository.create(createUserDto)
      await this.userRepository.save(user);
     
     delete user.password;
-    return user;
+    return user; 
   }
   async updateUser(data: any, userId: any): Promise<any> {
     const userExist = await this.userRepository.findOne({ email: data.email });
@@ -53,7 +51,7 @@ export class UserService {
       throw { message: `User Already exists with same email!`, status: 400 };
     }
 
-    const userIdExist = await this.userRepository.findOne({ userId: data.userId });
+    const userIdExist = await this.userRepository.findOne({ id: data.userId });
 
     if (userIdExist) {
       throw { message: `User Already exists with same userId!`, status: 400 };
@@ -68,12 +66,25 @@ export class UserService {
       throw { message: `User Not Updated Successfully!`, status: 400 };
     }
   }
+  async createUserRole(userId: number, role: string): Promise<any> {
+    const roleExist = await this.userRoleRepository.findOne({ where:{user:{id:userId},role:role} });
+
+    if (roleExist) {
+      throw { message: `User Already exists with same role!`, status: 400 };
+    }
+
+    const user_role = await this.userRoleRepository.create({user:{id:userId},role:role});
+    await this.userRoleRepository.save(user_role)
+    if (user_role) {
+      return { message: 'Role successfully assigned to user', status: 200, data:null};
+    } else {
+      throw { message: `User Not Updated Successfully!`, status: 400 };
+    }
+  }
   async getUserByOrgId(organizationId: string): Promise<any> {
     return await this.userRepository.find({where: { organizationId }});
   }
-  async getAllPhysician(): Promise<any> {
-    return await this.userRepository.find({ role: 'DOCTOR' });
-  }
+
 
   async findByPhoneNumber(phone: string): Promise<User> {
     return await this.userRepository.findOne({ phone });

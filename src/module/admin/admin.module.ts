@@ -4,9 +4,10 @@ import { AdminController } from './admin.controller';
 
 import { AdminService } from './admin.service';
 import { AuthModule } from '../auth';
+import { UserModule, UserService } from '../user';
 
 @Module({
-  imports: [AuthModule, TypeOrmModule.forFeature([])],
+  imports: [AuthModule,UserModule, TypeOrmModule.forFeature([])],
   controllers: [AdminController],
   providers: [AdminService],
 })

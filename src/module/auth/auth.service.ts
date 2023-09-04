@@ -5,7 +5,7 @@ import * as bcrypt from 'bcrypt';
 import { MapperUtil, ROLE, UnAuthorizedException } from '../../shared';
 import { UserDto, CreateUserDto, UserService, VerifyUserDto } from '../user';
 import { AuthPayload, AuthTokenDto, JwtPayload, LoginDto } from './dtos';
-import { User } from '../user/user.entity';
+import { User } from '../user/entities/user.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -32,7 +32,7 @@ return {data:data,message:"User successfully created"}
 
   async verifyUser(verifyUserDto: VerifyUserDto): Promise<AuthTokenDto> {
     const user = await this.userService.createAndGetUser(verifyUserDto);
-    return this.generateAuthToken(MapperUtil.map(UserDto, user), ROLE.DOCTOR, user.phone);
+    return this.generateAuthToken(MapperUtil.map(UserDto, user), ROLE.EMPLOYEE, user.phone);
   }
 
   async createUser(createUserDto: CreateUserDto): Promise<AuthTokenDto> {
@@ -41,14 +41,14 @@ return {data:data,message:"User successfully created"}
     console.log("PASSWORD",createUserDto.password)
     const user = await this.userService.createUser(createUserDto);
     console.log(user,"------------------")
-    return this.generateAuthToken(MapperUtil.map(UserDto, user), ROLE.DOCTOR, user.phone);
+    return this.generateAuthToken(MapperUtil.map(UserDto, user), ROLE.EMPLOYEE, user.phone);
   }
 
   async authenticateUser(loginDto: LoginDto): Promise<AuthTokenDto> {
     const user = await this.userService.findByEmail(loginDto.email);
     console.log(user)
     await this.validateCredentials(loginDto, user);
-    return this.generateAuthToken(MapperUtil.map(UserDto, user), ROLE.DOCTOR, user.phone);
+    return this.generateAuthToken(MapperUtil.map(UserDto, user), ROLE.EMPLOYEE, user.phone);
   }
 
   getAuthToken(data: any, authPayload: AuthPayload): AuthTokenDto {

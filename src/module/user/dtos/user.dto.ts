@@ -17,7 +17,5 @@ export class UserDto {
   @IsOptional()
   phone: string;
 
-  @Expose()
-  @IsNotEmpty()
-  userId: string;
+
 }

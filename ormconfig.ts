@@ -1,7 +1,8 @@
 
 
 import * as dotenv from 'dotenv';
-import { User } from 'src/module/user/user.entity';
+import { User } from 'src/module/user/entities/user.entity';
+import { UserRoles } from 'src/module/user/entities/user.roles.entity';
 dotenv.config();
 
 module.exports = {
@@ -14,7 +15,8 @@ module.exports = {
   synchronize: true, 
   timezone: 'utc',
   entities: [
-    User
+    User,
+    UserRoles
 
   ],
   // migrations: ['src/database/migrations/*{.ts,.js}'],
