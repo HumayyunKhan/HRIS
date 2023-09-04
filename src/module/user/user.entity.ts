@@ -10,7 +10,7 @@ export class User extends BaseEntity {
   @Column({ type: 'varchar', length: 255, unique: true, nullable: true })
   email: string;
 
-  @Column({ type: 'varchar', length: 255, default: '', nullable: true })
+  @Column({ type: 'varchar', length: 1000, default: '', nullable: true })
   password: string;
 
   @Column({ type: 'varchar', length: 255, default: '', nullable: true })
@@ -37,8 +37,6 @@ export class User extends BaseEntity {
   @Column({ type: 'varchar', length: 255, unique: true, nullable: true, name: 'user_id' })
   userId: string;
 
-  @Column({ type: 'varchar', nullable: true, name: 'organization_Id' })
-  organizationId: number;
 
   @Column({
     type: 'enum',

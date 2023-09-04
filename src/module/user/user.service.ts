@@ -7,6 +7,10 @@ import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
+  test(req: any) {
+    return {data:"HELLO WORLD",message:"ITS WORKS FOR THIS ROUTE"}
+    // throw new Error('Method not implemented.');
+  }
   constructor(private readonly userRepository: UserRepository) {}
 
   async createAndGetUser(verifyUserDto: VerifyUserDto): Promise<User> {
@@ -33,9 +37,12 @@ export class UserService {
     if (userIdExist) {
       throw { message: `User Already exists with same userId!`, status: 400 };
     }
+    console.log("CLOSE TO  USER CRAETION")
     createUserDto.role = ROLE[createUserDto.role];
     createUserDto.password = await this.hashPassword(createUserDto.password);
-    const user = await this.userRepository.save(createUserDto);
+    const user=this.userRepository.create(createUserDto)
+     await this.userRepository.save(user);
+    
     delete user.password;
     return user;
   }
@@ -72,8 +79,8 @@ export class UserService {
     return await this.userRepository.findOne({ phone });
   }
 
-  async findByEmail(userId: string): Promise<User> {
-    return await this.userRepository.findOne({ userId });
+  async findByEmail(email: string): Promise<User> {
+    return await this.userRepository.findOne({ where:{email} });
   }
 
   async findById(id: string): Promise<User> {
@@ -88,6 +95,6 @@ export class UserService {
     return await this.userRepository.save(user);
   }
   hashPassword(password: string): Promise<string> {
-    return bcrypt.hash(password, 12);
+    return bcrypt.hash(password, 10);
   }
 }

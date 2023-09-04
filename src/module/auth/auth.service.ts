@@ -5,13 +5,29 @@ import * as bcrypt from 'bcrypt';
 import { MapperUtil, ROLE, UnAuthorizedException } from '../../shared';
 import { UserDto, CreateUserDto, UserService, VerifyUserDto } from '../user';
 import { AuthPayload, AuthTokenDto, JwtPayload, LoginDto } from './dtos';
+import { User } from '../user/user.entity';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class AuthService {
+  async registration(body: any,file:any) {
+console.log(body.name,"---------------")
+    const data=await this.createUser(body)
+return {data:data,message:"User successfully created"}
+
+    
+  }
+
+  test(req: any) {
+    return {data:"HELLO",message:"WORKING ON AUTH"}
+  }
   constructor(
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
-    private readonly userService: UserService
+    private readonly userService: UserService,
+    // @InjectRepository(User)
+    // private readonly userRepository:Repository<User>
   ) {}
 
   async verifyUser(verifyUserDto: VerifyUserDto): Promise<AuthTokenDto> {
@@ -20,13 +36,17 @@ export class AuthService {
   }
 
   async createUser(createUserDto: CreateUserDto): Promise<AuthTokenDto> {
+    console.log("----------------------inside CRAETE USER FUNCTION -------------------")
     createUserDto.password = await this.hashPassword(createUserDto.password);
+    console.log("PASSWORD",createUserDto.password)
     const user = await this.userService.createUser(createUserDto);
+    console.log(user,"------------------")
     return this.generateAuthToken(MapperUtil.map(UserDto, user), ROLE.DOCTOR, user.phone);
   }
 
   async authenticateUser(loginDto: LoginDto): Promise<AuthTokenDto> {
-    const user = await this.userService.findByEmail(loginDto.userId);
+    const user = await this.userService.findByEmail(loginDto.email);
+    console.log(user)
     await this.validateCredentials(loginDto, user);
     return this.generateAuthToken(MapperUtil.map(UserDto, user), ROLE.DOCTOR, user.phone);
   }
@@ -57,20 +77,25 @@ export class AuthService {
     if (!data) {
       throw new UnAuthorizedException('INVALID_CREDENTIALS');
     }
+    console.log(loginDto.password)
+    console.log(data.password)
 
     const match = await this.comparePasswords(loginDto.password, data.password);
+    console.log(match,"00000000000000000")
     if (!match) {
-      throw new UnAuthorizedException('INVALID_CREDENTIALS');
+      throw new UnAuthorizedException('INVALID_CREDENTIALS PASSWORD');
     }
     return true;
   }
 
-  hashPassword(password: string): Promise<string> {
-    return bcrypt.hash(password, 10);
+  async hashPassword(password: string): Promise<string> {
+    const hash=await bcrypt.hash(password, 10);
+    console.log(hash)
+    return hash
   }
 
-  comparePasswords(password: string, passwordHash: string): Promise<boolean> {
-    return bcrypt.compare(password, passwordHash);
+ async comparePasswords(password: string, passwordHash: string): Promise<boolean> {
+    return  await bcrypt.compare(password, passwordHash);
   }
 
   private _getJwtExpiryByRole(role: ROLE) {

@@ -47,7 +47,7 @@ async function bootstrap() {
     })
   );
   /** Swagger configuration */
-  setupSwagger(app);
+  // setupSwagger(app);
 
   const port = configService.get<number>('port');
   await app.listen(port);
