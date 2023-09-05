@@ -20,7 +20,7 @@ export default class TypeOrmConfig {
         UserRoles
       ],
       synchronize: true,
-      logging: isDevelopmentEnv,
+      // logging: isDevelopmentEnv,
       supportBigNumbers: true,
       bigNumberStrings: false,
       // keepConnectionAlive: isDevelopmentEnv,

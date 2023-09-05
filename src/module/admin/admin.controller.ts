@@ -8,7 +8,7 @@ import { rolePayload } from './dtos/role.dto';
 
 @ApiTags('admin')
 @Controller('admin')
-@Public()
+// @Public()  // to define a controller as public
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
 

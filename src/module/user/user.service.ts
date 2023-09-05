@@ -34,12 +34,11 @@ export class UserService {
       throw { message: `User Already exists with same email!`, status: 400 };
     }
 
-
-    console.log("CLOSE TO  USER CRAETION")
     createUserDto.role = ROLE[createUserDto.role];
     // createUserDto.password = await this.hashPassword(createUserDto.password);
     const user=this.userRepository.create(createUserDto)
      await this.userRepository.save(user);
+     await this.userRoleRepository.save({user:{id:user.id},role:ROLE[createUserDto.role]})
     
     delete user.password;
     return user; 
@@ -91,7 +90,7 @@ export class UserService {
   }
 
   async findByEmail(email: string): Promise<User> {
-    return await this.userRepository.findOne({ where:{email} });
+    return await this.userRepository.findOne({ where:{email} ,relations:["roles"]});
   }
 
   async findById(id: string): Promise<User> {

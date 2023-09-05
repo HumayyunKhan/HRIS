@@ -32,7 +32,7 @@ return {data:data,message:"User successfully created"}
 
   async verifyUser(verifyUserDto: VerifyUserDto): Promise<AuthTokenDto> {
     const user = await this.userService.createAndGetUser(verifyUserDto);
-    return this.generateAuthToken(MapperUtil.map(UserDto, user), ROLE.EMPLOYEE, user.phone);
+    return this.generateAuthToken(MapperUtil.map(UserDto, user), [ROLE.EMPLOYEE], user.phone);
   }
 
   async createUser(createUserDto: CreateUserDto): Promise<AuthTokenDto> {
@@ -41,14 +41,15 @@ return {data:data,message:"User successfully created"}
     console.log("PASSWORD",createUserDto.password)
     const user = await this.userService.createUser(createUserDto);
     console.log(user,"------------------")
-    return this.generateAuthToken(MapperUtil.map(UserDto, user), ROLE.EMPLOYEE, user.phone);
+    return this.generateAuthToken(MapperUtil.map(UserDto, user), [ROLE.EMPLOYEE], user.phone);
   }
 
   async authenticateUser(loginDto: LoginDto): Promise<AuthTokenDto> {
-    const user = await this.userService.findByEmail(loginDto.email);
+    let user:any = await this.userService.findByEmail(loginDto.email);
+    user.roles=user.roles.map((u:any)=>u.role)
     console.log(user)
     await this.validateCredentials(loginDto, user);
-    return this.generateAuthToken(MapperUtil.map(UserDto, user), ROLE.EMPLOYEE, user.phone);
+    return this.generateAuthToken(MapperUtil.map(UserDto, user), user.roles, user.phone);
   }
 
   getAuthToken(data: any, authPayload: AuthPayload): AuthTokenDto {
@@ -65,9 +66,9 @@ return {data:data,message:"User successfully created"}
     return authToken;
   }
 
-  generateAuthToken(data: any, role: ROLE, username: string): AuthTokenDto {
+  generateAuthToken(data: any, role: [ROLE], username: string): AuthTokenDto {
     const authPayload = MapperUtil.map(AuthPayload, data);
-    authPayload.roles = [role];
+    authPayload.roles = role;
     authPayload.username = username;
     return this.getAuthToken(data, authPayload);
   }
