@@ -1,5 +1,6 @@
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModuleAsyncOptions, TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { Jobs } from 'src/module/company/entities/job.entity';
 
 import { User } from 'src/module/user/entities/user.entity';
 import { UserRoles } from 'src/module/user/entities/user.roles.entity';
@@ -17,7 +18,8 @@ export default class TypeOrmConfig {
       password: configService.get('database.password'),
       entities: [
         User,
-        UserRoles
+        UserRoles,
+        Jobs
       ],
       synchronize: true,
       // logging: isDevelopmentEnv,
