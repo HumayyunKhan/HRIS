@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JOB, NotFoundException, ROLE, UnAuthorizedException } from '../../shared';
 import * as DTO from './dtos';
 // import { User } from './entities/job.entity';
@@ -6,6 +6,7 @@ import { JobRepository } from './repositories/job.repository';
 import * as bcrypt from 'bcrypt';
 import { OrgRepository } from './repositories/organization.repository';
 import { randomUUID } from 'crypto';
+import { ApplicationRepository } from './repositories/job.application.repository';
 
 @Injectable()
 export class OrganizationService {
@@ -34,7 +35,7 @@ export class OrganizationService {
 
   constructor(
     private readonly jobRepository: JobRepository,
-    private readonly applicationRepo: JobRepository,
+    private readonly applicationRepo: ApplicationRepository,
     private readonly orgRepository: OrgRepository
 
   ) { }
@@ -81,6 +82,14 @@ export class OrganizationService {
   async findOrg(query: any) {
     const job = await this.orgRepository.findOne(query)
     if (!job) {throw new BadRequestException("organization not found")}
+    return job
+  }
+  async JobApplication(application: DTO.applicationDto) {
+    const applied=await this.applicationRepo.findOne({where:{job:application.job}})
+    if(applied)throw new UnauthorizedException("Already applied")
+    const job =  this.applicationRepo.create(application)
+    if (!job) {throw new BadRequestException("organization not found")}
+    await this.applicationRepo.save(job)
     return job
   }
 

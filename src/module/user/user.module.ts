@@ -4,9 +4,10 @@ import { UserController } from './user.controller';
 import { UserRepository } from './repositories/user.repository';
 import { UserService } from './user.service';
 import { UserRoleRepository } from './repositories/user.role.repository';
+import { OrganizationModule } from '../company';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([UserRepository,UserRoleRepository])],
+  imports: [TypeOrmModule.forFeature([UserRepository,UserRoleRepository]),OrganizationModule],
   controllers: [UserController],
   providers: [UserService],
   exports: [UserService],

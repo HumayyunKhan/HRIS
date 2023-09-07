@@ -1,21 +1,23 @@
 import { IsNotEmpty, IsOptional } from 'class-validator';
 import { Expose } from 'class-transformer';
+import { Jobs } from '../entities/job.entity';
+import { User } from 'src/module/user/entities/user.entity';
 
-export class UserDto {
-  @Expose()
-  id: number;
-
-  @Expose()
-  @IsNotEmpty()
-  name: string;
+export class applicationDto {
 
   @Expose()
   @IsNotEmpty()
-  email: string;
+  job: Jobs;
+
+  @Expose()
+  @IsNotEmpty()
+  applicant: User;
 
   @Expose()
   @IsOptional()
-  phone: string;
+  resume: string;
+
 
 
 }
+

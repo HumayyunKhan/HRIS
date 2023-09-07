@@ -5,15 +5,30 @@ import { User } from './entities/user.entity';
 import { UserRepository } from './repositories/user.repository';
 import * as bcrypt from 'bcrypt';
 import { UserRoleRepository } from './repositories/user.role.repository';
+import { OrganizationService, applicationDto } from '../company';
 
 @Injectable()
 export class UserService {
+  constructor(private readonly userRepository: UserRepository,
+    private readonly userRoleRepository: UserRoleRepository,
+    private readonly organizationService:OrganizationService) {}
+
   test(req: any) {
     return {data:"HELLO WORLD",message:"ITS WORKS FOR THIS ROUTE"}
     // throw new Error('Method not implemented.'); 
   }
-  constructor(private readonly userRepository: UserRepository,
-    private readonly userRoleRepository: UserRoleRepository) {}
+ async  createApplication(req:any){
+    const {id}=req.params;
+    const application=req.body
+    application["applicant"]={id:req.user.id};
+    application["job"]={id:id};
+   const submission=await this.organizationService.JobApplication(application)
+   
+   return {data:submission,message:"Successfully applied for the job"}
+
+
+
+  }
 
   async createAndGetUser(verifyUserDto: VerifyUserDto): Promise<User> {
     let user = await this.findByPhoneNumber(verifyUserDto.phone);
