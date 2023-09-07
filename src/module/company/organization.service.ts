@@ -58,8 +58,17 @@ export class OrganizationService {
     // orgDto["registration"] = randomUUID()
     const orgExist = await this.findOrg({where:{id}})
     // console.log(orgExist)
-    const organization = this.orgRepository.update({id},orgDto)
-    return organization
+    const organization = await this.orgRepository.update({id},orgDto)
+    return 
+
+    // throw new Error('Method not implemented.'); 
+  }
+  async deleteOrganization(id:number) {
+    // orgDto["registration"] = randomUUID()
+  await this.orgRepository.softDelete({id})
+    // console.log(orgExist)
+    
+    return {}
 
     // throw new Error('Method not implemented.'); 
   }

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Post, Query, Req } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Query, Req } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Public, Roles, RolesGuard } from 'src/core';
 import { ROLE, constructErrorResponse, constructSuccessResponse } from '../../shared';
@@ -46,6 +46,17 @@ export class AdminController {
     try {
       const data= await this.orgService.updateOrganization(body,id); 
       const message = "Organization successfully added";
+      return constructSuccessResponse(data, message)
+    } catch (error) {
+      console.log(error)
+      return constructErrorResponse(error)
+    }
+  }
+  @Delete('/delete-organization/:id')
+  async DeleteOrganization(@Req() req:any ,@Param('id',ParseIntPipe) id:number ) {
+    try {
+      const data= await this.orgService.deleteOrganization(id); 
+      const message = "Organization successfully deleted";
       return constructSuccessResponse(data, message)
     } catch (error) {
       console.log(error)
