@@ -226,50 +226,7 @@ function alphaNumeric(inputTxt) {
   }
 }
 
-function returnPatientFields() {
-  return [
-    'address',
-    'appointmentProviderIdentity',
-    'cellPhone',
-    'city',
-    'contactCellPhone',
-    'contactFirstName',
-    'contactLastName',
-    'contactRelationship',
-    'cpsoNumber',
-    'dateOfBirth',
-    'diagnosticTypeId',
-    // 'diagnosticTypeTitle',
-    'employmentStatus',
-    'firstName',
-    'gender',
-    'healthCardNumber',
-    // 'lastTaskCreated',
-    'lastName',
-    'maritalStatus',
-    'notes',
-    'ohipBillingNumber',
-    'patientEmailAddress',
-    'patientStatusDate',
-    'postalZipCode',
-    'preferredSpokenLanguage',
-    'primaryPhysician',
-    'primaryPhysicianAddress',
-    'primaryPhysicianBilling',
-    'providerRole',
-    'provinceState',
-    'residencePhone',
-    'responseAction',
-    'responseCode',
-    'responseDescription',
-    'responseId',
-    'sin',
-    'streetAddress',
-    // 'taskStatus',
-    'workPhone',
-    'workPhoneExtension',
-  ];
-}
+
 
 export {
   validate,
@@ -290,5 +247,5 @@ export {
   checkDate,
   removeFieldsFromObject,
   alphaNumeric,
-  returnPatientFields,
+  // returnPatientFields,
 };

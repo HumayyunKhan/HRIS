@@ -1,6 +1,8 @@
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModuleAsyncOptions, TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { JobApplications } from 'src/module/company/entities/job.applications.entity';
 import { Jobs } from 'src/module/company/entities/job.entity';
+import { Organization } from 'src/module/company/entities/organization.entity';
 
 import { User } from 'src/module/user/entities/user.entity';
 import { UserRoles } from 'src/module/user/entities/user.roles.entity';
@@ -19,7 +21,9 @@ export default class TypeOrmConfig {
       entities: [
         User,
         UserRoles,
-        Jobs
+        Jobs,
+        JobApplications,
+        Organization
       ],
       synchronize: true,
       // logging: isDevelopmentEnv,

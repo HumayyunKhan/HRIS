@@ -19,11 +19,6 @@ export class CreateUserDto {
   @IsNotEmpty()
   password: string;
 
-
-  @Expose()
-  @IsNotEmpty()
-  organizationId: number;
-
   @Expose()
   @IsNotEmpty()
   role: string;

@@ -3,6 +3,8 @@ import { BeforeInsert, Column, Entity, OneToMany } from 'typeorm';
 import { ROLE } from '../../../shared';
 import { UserRoles } from './user.roles.entity';
 import { Jobs } from 'src/module/company/entities/job.entity';
+import { Organization } from 'src/module/company/entities/organization.entity';
+import { JobApplications } from 'src/module/company/entities/job.applications.entity';
 
 @Entity({ name: 'users' })
 export class User extends BaseEntity {
@@ -41,6 +43,8 @@ export class User extends BaseEntity {
   roles: UserRoles[]
   @OneToMany(() => Jobs, (job) => job.employer) 
   jobs: Jobs[]
+  applications: JobApplications;
+  organizations: Organization;
 
 
   @BeforeInsert()

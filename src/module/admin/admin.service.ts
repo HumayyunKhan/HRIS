@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { AuthService } from '../auth';
 import { UserService } from '../user';
 import { rolePayload } from './dtos/role.dto';
-// import { OrganizationRepository, AdminRepository } from './repositories';
 
 @Injectable()
 export class AdminService {
