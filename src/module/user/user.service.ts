@@ -25,6 +25,7 @@ export class UserService {
 
  async  viewProfile(id:number) {
     const user = await this.userRepository.findOne()
+    delete user.applications
     // const user = await this.userRepository.findOne({where:{id:id}})
     if(!user)throw new BadRequestException("User not found")
     console.log(user)

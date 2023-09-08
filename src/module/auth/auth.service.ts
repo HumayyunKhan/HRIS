@@ -1,13 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { MapperUtil, ROLE, UnAuthorizedException } from '../../shared';
-import { UserDto, CreateUserDto, UserService, VerifyUserDto } from '../user';
+import { UserDto, CreateUserDto, UserService, VerifyUserDto, UserRepository } from '../user';
 import { AuthPayload, AuthTokenDto, JwtPayload, LoginDto } from './dtos';
 import { User } from '../user/entities/user.entity';
-import { Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
+import {issue, verify} from "./guards/jwt/index"
+import { SendEmail } from 'src/core/services/sendgrid.service';
 
 @Injectable()
 export class AuthService {
@@ -26,8 +26,8 @@ return {data:data,message:"User successfully created"}
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
     private readonly userService: UserService,
-    // @InjectRepository(User)
-    // private readonly userRepository:Repository<User>
+    private readonly userRepo: UserRepository,
+    
   ) {}
 
   async verifyUser(verifyUserDto: VerifyUserDto): Promise<AuthTokenDto> {
@@ -104,4 +104,52 @@ return {data:data,message:"User successfully created"}
       accessTokenExpiry: this.configService.get('jwt.accessTokenExpiresInSec'),
     };
   }
+
+  
+  async forgotPassword(body: any) {
+    const { email } = body
+    const user = await this.userService.findByEmail(email);
+    if (!user) throw new BadRequestException("user not found")
+
+    const token = issue({ id: user.id }, '24hr');
+    const resetEmail = ` <h1>Hello ${user.name}</h1>, 
+
+        <p>please click on the link to reset your password: <a target="_blank" href=${process.env.RESET_URL}?token=${token}> reset password </a></p>
+        <p>please copy paste following url in browser if link doesnt work</p>
+
+      <em>${process.env.RESET_URL}?token=${token}</em>
+      <hr />
+       <p>Link is valid for 1 hour only.</p>
+        <p>if you didn't initiate password reset please ignore this email.</p>
+      `;
+    const message = {
+      to: user.email,
+      from: process.env.SENDGRID_SENDER, // Change to your verified sender
+      subject: 'OTP - HRIS',
+      html: resetEmail,
+    };
+    await SendEmail(message);
+    return {data:{},message:"'Email with Password reset instructions has been sent to your registered email address.'"}
+    // return constructSuccessResponse({}, )
+
+  }
+
+  async passwordReset(body: any, query: any) {
+    const { password } = body;
+    const { token } = query;
+    const isValid: any = verify(token);
+    if (!isValid) throw new UnauthorizedException("Invalid token")
+    const user = await this.userService.findById(isValid.id);
+    if (!user) throw new UnauthorizedException("user not found")
+    const isPasswordReused = await bcrypt.compare(password, user.password);
+    if (isPasswordReused) throw new BadRequestException("Cannot use old password")
+    const passwordHash = await bcrypt.hash(password, process.env.SALT_ROUNDS);
+    await this.userRepo.update(
+      { id: isValid.id },
+      { password: passwordHash },
+    );
+
+    return {}
+  }
+
 }

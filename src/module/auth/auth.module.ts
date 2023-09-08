@@ -2,14 +2,16 @@ import { forwardRef, MiddlewareConsumer, Module, NestModule, RequestMethod } fro
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
-import { UserModule } from '../user';
+import { UserModule, UserRepository } from '../user';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { JwtStrategy } from './strategies';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   imports: [
     UserModule,
+    TypeOrmModule.forFeature([UserRepository]),
     PassportModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],

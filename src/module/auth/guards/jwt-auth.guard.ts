@@ -45,38 +45,3 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
   }
 }
 
-// @Injectable()
-// export class JwtAuthGuard extends AuthGuard('jwt') {
-//   constructor(private reflector: Reflector) {
-//     super();
-//   }
-
-//   canActivate(context: ExecutionContext) {
-//     const excluded = this.reflector.get<boolean>('excluded', context.getHandler());
-
-//     if (excluded) {
-//       return true;   
-//     }
-
-//     // Call the parent AuthGuard canActivate method
-//     return super.canActivate(context);
-//   }
-
-//   handleRequest(err: any, userId: any, info: any) {
-//     console.log("----------------------INSIDE ------------------------")
-//     console.log(err,"--------------------",info,"-------------",userId,"-----------------")
-//     // Check if user is authenticated or not
-//     if (err || !userId) {
-//       console.log("============================")
-//       // Throw a custom UnauthorizedException with your desired message
-//       const errorMessage = 'You Need To Login First'; // Replace with your custom error message
-// const customError = {
-//   message: errorMessage,
-// };
-// throw new UnauthorizedException("Token Invalid")
-//     // return constructErrorResponse(customError);
-//     }
-//     return userId;
-//   }
-// }
-
