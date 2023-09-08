@@ -1,5 +1,5 @@
 import { Expose } from 'class-transformer';
-import { CreateDateColumn, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { CreateDateColumn, DeleteDateColumn, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 export abstract class BaseEntity {
   @Expose()
@@ -15,6 +15,6 @@ export abstract class BaseEntity {
   updatedAt: Date;
 
   @Expose()
-  @UpdateDateColumn({ name: 'deleted_at', type: 'datetime' })
+  @DeleteDateColumn({ name: 'deleted_at', type: 'datetime' })
   deletedAt: Date;
 }

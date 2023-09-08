@@ -9,7 +9,7 @@ import { RequestIdMiddleware } from './core';
 // import { setupLogger } from './logger';
 import * as bodyParser from 'body-parser';
 
-import { ValidationFailedException } from './shared';
+import { ValidationFailedException, constructErrorResponse } from './shared';
 import { setupSwagger } from './swagger';
 
 async function bootstrap() {
@@ -42,11 +42,12 @@ async function bootstrap() {
       transform: true,
       whitelist: true,
       exceptionFactory: (validationErrors: ValidationError[] = []) => {
+        // return constructErrorResponse(validationErrors)
         return new ValidationFailedException(validationErrors);
       },
     })
   );
-  /** Swagger configuration */
+  /** Swagger configuration */ 
   // setupSwagger(app);
 
   const port = configService.get<number>('port');

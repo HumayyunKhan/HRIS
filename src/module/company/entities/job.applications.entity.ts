@@ -18,7 +18,7 @@ export class JobApplications extends BaseEntity {
 
   @Column({name:"status",type:"enum",enum:JOBSTATUS,default:JOBSTATUS.PENDING})
   status:JOBSTATUS
-
+ 
 }
 
 

@@ -1,10 +1,12 @@
 import { BaseEntity } from '../../../core/entity/base.entity';
-import { BeforeInsert, Column, Entity, OneToMany } from 'typeorm';
+import { BeforeInsert, Column, Entity, OneToMany, OneToOne } from 'typeorm';
 import { ROLE } from '../../../shared';
 import { UserRoles } from './user.roles.entity';
 import { Jobs } from 'src/module/company/entities/job.entity';
 import { Organization } from 'src/module/company/entities/organization.entity';
 import { JobApplications } from 'src/module/company/entities/job.applications.entity';
+import { Employee } from 'src/module/company/entities/employee.entity';
+import { Sessions } from 'src/module/auth/entities/user.session.entity';
 
 @Entity({ name: 'users' })
 export class User extends BaseEntity {
@@ -43,10 +45,20 @@ export class User extends BaseEntity {
   roles: UserRoles[]
   @OneToMany(() => Jobs, (job) => job.employer) 
   jobs: Jobs[]
+
+  @OneToMany(() => JobApplications, (application) => application.applicant) 
   applications: JobApplications;
+
+  @OneToMany(() => Organization, (org) => org.ceo)  
   organizations: Organization;
 
+  @OneToMany(() => Employee, (emp) => emp.employee)  
+  employee: Employee;
 
+  @OneToOne(()=>Sessions,(session)=>session.user)
+  session:Sessions
+ 
+ 
   @BeforeInsert()
   emailToLowerCase() {
     this.email = this.email ? this.email.toLowerCase() : this.email;

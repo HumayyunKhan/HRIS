@@ -11,7 +11,7 @@ export class Jobs extends BaseEntity {
   @Column({ type: 'varchar', length: 600, default: null, nullable: true })
   title: string;
 
-  @Column({ type: 'varchar',name:"company_name", length: 255, unique: true, nullable: true })
+  @Column({ type: 'varchar',name:"company_name", length: 255, nullable: true })
   companyName: string;
 
   @Column({ type: 'varchar', length: 1000, default: "", nullable: true })
@@ -25,6 +25,7 @@ export class Jobs extends BaseEntity {
 
   @ManyToOne(() => User, (user) => user.jobs) 
   employer: User
+  
   @OneToMany(() => JobApplications, (applications) => applications.job) 
   applications: JobApplications
 

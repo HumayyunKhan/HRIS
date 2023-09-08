@@ -38,6 +38,16 @@ export class ErrorService {
 
     return errors;
   }
+  public async getBadRequestError(lang: string): Promise<ApiErrorDto[]> {
+    const errors: ApiErrorDto[] = [];
+
+    errors.push({
+      name: 'BAD REQUEST',
+      message: await this.getErrorMessage(lang, 'BAD REQUEST'),
+    });
+
+    return errors;
+  }
 
   public async getResourceNotFoundError(lang: string): Promise<ApiErrorDto[]> {
     const errors: ApiErrorDto[] = [];

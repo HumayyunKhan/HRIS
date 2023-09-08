@@ -1,5 +1,5 @@
-import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
-import { JOB, NotFoundException, ROLE, UnAuthorizedException } from '../../shared';
+import { BadGatewayException, BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { JOB, NotFoundException, ROLE } from '../../shared';
 import * as DTO from './dtos';
 // import { User } from './entities/job.entity';
 import { JobRepository } from './repositories/job.repository';
@@ -10,12 +10,14 @@ import { ApplicationRepository } from './repositories/job.application.repository
 
 @Injectable()
 export class OrganizationService {
-  async CloseJob(id: number) {
+
+  async CloseJob(id: number,userId:number) {
     const job: any = await this.findJob({ where: { id }, loadRelationIds: true })
-    if (job.employer != id) throw new UnAuthorizedException("You are not authorized to close this job")
+    if (job.employer != userId) throw new UnauthorizedException("You are not authorized to close this job")
     await this.jobRepository.update({ id }, { status: JOB.CLOSED })
     return { data: {}, message: "Job successfully closed" }
   }
+
   async CreateJob(id: number, data: any) {
     data["employer"] = {}
     data.employer.id = id
@@ -23,6 +25,7 @@ export class OrganizationService {
     await this.jobRepository.save(job)
     return { data: job, message: "Jobs successfully fetched" }
   }
+
   async FetchJobs() {
     const jobs = await this.jobRepository.find({ relations: ["employer"] })
     jobs.map(async (job) => {
@@ -31,6 +34,20 @@ export class OrganizationService {
       delete job.employer;
     })
     return { data: jobs, message: "Jobs successfully fetched" }
+  }
+
+  async FetchApplications(req:any) {
+
+    let applications = await this.applicationRepo.find({relations:['applicant']})
+    console.log(applications,"APPLICATIONS HERE")
+    // const applications = await this.applicationRepo.find({ where:{job:{id:req.user.id}},relations: ["applicant",'job'] })
+    applications.map(async (applicant) => {
+      // applicant["applicantName"] = applicant.applicant.name;
+      // applicant["applicantEmail"] = applicant.applicant.email;
+      // applicant["applicantImage"] = applicant.applicant.imageUrl;
+      // delete applicant.applicant;
+    })
+    return { data: applications, message: "Job Applications successfully fetched" }
   }
 
   constructor(
@@ -48,7 +65,7 @@ export class OrganizationService {
     orgDto["registration"] = randomUUID()
     const orgExist = await this.orgRepository.findOne({ where: { name: orgDto.name } })
     console.log(orgExist)
-    if (orgExist) throw new UnAuthorizedException("An organization is already regsitered with this name")
+    if (orgExist) throw new UnauthorizedException("An organization is already regsitered with this name")
     const organization = this.orgRepository.create(orgDto)
     await this.orgRepository.save(organization)
     return organization
@@ -77,6 +94,11 @@ export class OrganizationService {
   async findJob(query: any) {
     const job = await this.jobRepository.findOne(query)
     if (!job) throw new BadRequestException("job not found")
+    return job
+  }
+  async findJobApplication(query: any) {
+    const job = await this.applicationRepo.findOne(query)
+    if (!job) throw new BadRequestException("Job application doesnot exist not found")
     return job
   }
   async findOrg(query: any) {

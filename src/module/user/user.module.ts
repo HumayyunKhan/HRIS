@@ -5,9 +5,10 @@ import { UserRepository } from './repositories/user.repository';
 import { UserService } from './user.service';
 import { UserRoleRepository } from './repositories/user.role.repository';
 import { OrganizationModule } from '../company';
+import { ApplicationRepository } from '../company/repositories/job.application.repository';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([UserRepository,UserRoleRepository]),OrganizationModule],
+  imports: [TypeOrmModule.forFeature([UserRepository,UserRoleRepository,ApplicationRepository]),OrganizationModule],
   controllers: [UserController],
   providers: [UserService],
   exports: [UserService],

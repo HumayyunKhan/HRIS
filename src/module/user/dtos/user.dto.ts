@@ -19,3 +19,9 @@ export class UserDto {
 
 
 }
+export class Id {
+  @Expose()
+  id: number;
+
+
+}

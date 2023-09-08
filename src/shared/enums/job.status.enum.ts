@@ -3,6 +3,11 @@ export enum JOB {
   CLOSED ="CLOSED"
 
 }
+export enum EMPLOYEESTATUS{
+  ONBOARDED = 'ONBOARDED',
+  LEFT ="LEFT"
+
+}
 export enum JOBSTATUS{
   PENDING = 'PENDING',
   ACCEPTED ="ACCEPTED",

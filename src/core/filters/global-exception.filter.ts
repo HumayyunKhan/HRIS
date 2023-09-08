@@ -1,5 +1,6 @@
 import {
   ArgumentsHost,
+  BadRequestException,
   Catch,
   ExceptionFilter,
   HttpException,
@@ -34,6 +35,8 @@ export class GlobalExceptionFilter implements ExceptionFilter {
         errors = this.errorService.getErrorsFromValidationFailedException(exception, i18nLang);
       } else if (exception instanceof UnauthorizedException) {
         errors = await this.errorService.getUnAuthorizedError(i18nLang);
+      } else if (exception instanceof BadRequestException) {
+        errors = await this.errorService.getBadRequestError(i18nLang);
       } else if (exception instanceof NotFoundException) {
         errors = await this.errorService.getResourceNotFoundError(i18nLang);
       } else {

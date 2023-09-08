@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { NotFoundException, ROLE } from '../../../src/shared';
 import { CreateUserDto, UserDto, VerifyUserDto } from './dtos';
 import { User } from './entities/user.entity';
@@ -6,15 +6,29 @@ import { UserRepository } from './repositories/user.repository';
 import * as bcrypt from 'bcrypt';
 import { UserRoleRepository } from './repositories/user.role.repository';
 import { OrganizationService, applicationDto } from '../company';
+import { ApplicationRepository } from '../company/repositories/job.application.repository';
 
 @Injectable()
 export class UserService {
   constructor(private readonly userRepository: UserRepository,
     private readonly userRoleRepository: UserRoleRepository,
-    private readonly organizationService:OrganizationService) {}
+    private readonly organizationService:OrganizationService,
+    private readonly applicationRepo:ApplicationRepository
+    
+    ) {}
 
   test(req: any) {
     return {data:"HELLO WORLD",message:"ITS WORKS FOR THIS ROUTE"}
+    // throw new Error('Method not implemented.'); 
+  }
+
+
+ async  viewProfile(id:number) {
+    const user = await this.userRepository.findOne()
+    // const user = await this.userRepository.findOne({where:{id:id}})
+    if(!user)throw new BadRequestException("User not found")
+    console.log(user)
+    return {data:user,message:"Profile data successfully fetched"}
     // throw new Error('Method not implemented.'); 
   }
  async  createApplication(req:any){
@@ -22,9 +36,21 @@ export class UserService {
     const application=req.body
     application["applicant"]={id:req.user.id};
     application["job"]={id:id};
+    const jobExist=await this.organizationService.findJob({where:{id}})
    const submission=await this.organizationService.JobApplication(application)
-   
+
    return {data:submission,message:"Successfully applied for the job"}
+
+
+
+  }
+ async  deleteApplication(req:any){
+    const {id}=req.params;
+    const jobExist=await this.organizationService.findJobApplication({where:{id,applicant:{id:req.user.id}}})
+    await this.applicationRepo.softDelete(id)
+  //  const submission=await this.organizationService.JobApplication(application)
+
+   return {data:{},message:"Application successfully cancelled"}
 
 
 

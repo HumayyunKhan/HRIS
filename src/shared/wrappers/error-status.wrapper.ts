@@ -27,11 +27,13 @@ const errorMessages = {
 };
 
 export const constructErrorResponse = async error => {
-  [BadRequestException, InternalServerErrorException, NotFoundException, UnauthorizedException].forEach(Exception => {
-    if (error instanceof Exception) {
-      throw error;
-    }
-  });
+  console.log(error,"99999999999999999");
+  // [ InternalServerErrorException, NotFoundException, UnauthorizedException].forEach(Exception => {
+  //   if (error instanceof Exception) {
+  //     console.log("INSTANCE")
+  //     throw error;
+  //   }
+  // });
 
   const status = error.status || error.statusCode || HttpStatus.INTERNAL_SERVER_ERROR;
   const serverError: ResponseDto = {
