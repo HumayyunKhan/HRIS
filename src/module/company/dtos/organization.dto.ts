@@ -48,7 +48,7 @@ export class CreateOrgDto {
 
   @Expose()
   @IsNotEmpty()
-  manager: User;
+  ceo: User;
 
 
 
@@ -78,7 +78,7 @@ export class UpdateOrgDto {
 
   @Expose()
   @IsOptional()
-  manager: User;
+  ceo: User;
 
 
 

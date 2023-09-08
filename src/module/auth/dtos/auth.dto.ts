@@ -1,4 +1,5 @@
 import { Expose } from 'class-transformer';
+import { IsEmail } from 'class-validator';
 import { ROLE } from 'src/shared';
 
 export class AuthTokenDto {
@@ -32,4 +33,10 @@ export class AuthPayload {
 
   @Expose()
   roles: ROLE[];
+}
+export class EMAIL {
+  @Expose()
+  @IsEmail()
+  email: string;
+
 }

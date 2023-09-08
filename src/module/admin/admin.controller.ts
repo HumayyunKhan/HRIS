@@ -10,7 +10,7 @@ import { CreateOrgDto, OrganizationService, UpdateOrgDto } from '../company';
 
 @ApiTags('admin')
 @Controller('admin')
-@Roles(ROLE.ADMIN)
+@Roles(ROLE.SUPERADMIN)
 // @Public()  // to define a controller as public
 export class AdminController {
   constructor(

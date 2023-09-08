@@ -3,7 +3,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { Public } from '../../core';
 import { ApiResponseDto, constructErrorResponse, constructSuccessResponse } from '../../shared';
 import { CreateUserDto } from '../user';
-import { AuthTokenDto, LoginDto } from './dtos';
+import * as DTO from './dtos';
 import { FileInterceptor } from '@nestjs/platform-express';
 
 import { AuthService } from './auth.service';
@@ -30,6 +30,7 @@ export class AuthController {
   @UseInterceptors(FileInterceptor('file'))
   async registeration(@UploadedFile() file: any,@Req() req: any) {
     try {
+    
       const data = await this.authService.registration(req.body,file); 
       const message = "Stories successfully fetched";
       return constructSuccessResponse(data, message)
@@ -49,9 +50,10 @@ export class AuthController {
     }
   }
   @Post('/forgot-password')
-  async ForgotPassword(@Req() req: any,) {
+  @Public()
+  async ForgotPassword(@Req() req: any,@Body() body:DTO.EMAIL){
     try {
-      const data = await this.authService.authenticateUser(req.body); 
+      const data = await this.authService.forgotPassword(req.body); 
       const message = "Stories successfully fetched";
       return constructSuccessResponse(data, message)
     } catch (error) {
@@ -59,6 +61,7 @@ export class AuthController {
     }
   }
   @Post('/reset-password')
+  @Public()
   async ResetPassword(@Req() req: any,@Body() body:any,@Query() query:any,) {
     try {
       const data = await this.authService.passwordReset(body,query); 

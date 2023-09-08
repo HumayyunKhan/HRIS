@@ -8,7 +8,7 @@ import { OrganizationModule } from '../company';
 import { ApplicationRepository } from '../company/repositories/job.application.repository';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([UserRepository,UserRoleRepository,ApplicationRepository]),OrganizationModule],
+  imports: [TypeOrmModule.forFeature([UserRepository, UserRoleRepository, ApplicationRepository]), OrganizationModule],
   controllers: [UserController],
   providers: [UserService],
   exports: [UserService],

@@ -17,6 +17,17 @@ export class UserDto {
   @IsOptional()
   phone: string;
 
+  @Expose()
+  @IsOptional()
+  imageUrl: string;
+
+  @Expose()
+  @IsOptional()
+  country: string;
+
+  @Expose()
+  @IsOptional()
+  shippingAddress: string;
 
 }
 export class Id {

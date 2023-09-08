@@ -13,8 +13,8 @@ export class Manager extends BaseEntity {
   @ManyToOne(()=>Organization, (org)=>org.employees)
   organization:Organization
 
-  @ManyToOne(() => Manager, (manager) => manager.manager) 
-  manager: Manager
+  @ManyToOne(() => User, (user) => user.managing) 
+  user: User
 
   @Column({ type: "enum", enum:EMPLOYEESTATUS, default:EMPLOYEESTATUS.ONBOARDED, nullable: true })
   status:EMPLOYEESTATUS ;

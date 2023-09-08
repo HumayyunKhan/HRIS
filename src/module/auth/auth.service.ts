@@ -8,11 +8,18 @@ import { AuthPayload, AuthTokenDto, JwtPayload, LoginDto } from './dtos';
 import { User } from '../user/entities/user.entity';
 import {issue, verify} from "./guards/jwt/index"
 import { SendEmail } from 'src/core/services/sendgrid.service';
+import { uploadFile } from 'src/shared/utils/s3Bucket';
 
 @Injectable()
 export class AuthService {
   async registration(body: any,file:any) {
-console.log(body.name,"---------------")
+console.log(body.name,"---------------",file)
+if(file){
+  const fileUrl=await uploadFile(file.buffer,file.originalname)
+  console.log(fileUrl,"FILE URL----------------")
+  body.imageUrl=fileUrl
+}
+
     const data=await this.createUser(body)
 return {data:data,message:"User successfully created"}
 
@@ -32,7 +39,7 @@ return {data:data,message:"User successfully created"}
 
   async verifyUser(verifyUserDto: VerifyUserDto): Promise<AuthTokenDto> {
     const user = await this.userService.createAndGetUser(verifyUserDto);
-    return this.generateAuthToken(MapperUtil.map(UserDto, user), [ROLE.EMPLOYEE], user.phone);
+    return this.generateAuthToken(MapperUtil.map(UserDto, user), [ROLE.USER], user.phone);
   }
 
   async createUser(createUserDto: CreateUserDto): Promise<AuthTokenDto> {
@@ -41,7 +48,7 @@ return {data:data,message:"User successfully created"}
     console.log("PASSWORD",createUserDto.password)
     const user = await this.userService.createUser(createUserDto);
     console.log(user,"------------------")
-    return this.generateAuthToken(MapperUtil.map(UserDto, user), [ROLE.EMPLOYEE], user.phone);
+    return this.generateAuthToken(MapperUtil.map(UserDto, user), [ROLE.USER], user.phone);
   }
 
   async authenticateUser(loginDto: LoginDto): Promise<AuthTokenDto> {

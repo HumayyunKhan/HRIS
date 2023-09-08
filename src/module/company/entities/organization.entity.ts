@@ -13,7 +13,7 @@ export class Organization extends BaseEntity {
   name: string;
 
   @Column({ type: 'uuid',name:"registration_id", unique: true, nullable: false })
-  registrationId: UUIDVersion;
+  registrationId: any;
 
   @ManyToOne(()=>User,(user)=>user.organizations,{nullable:true})
   ceo: User;

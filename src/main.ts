@@ -43,6 +43,11 @@ async function bootstrap() {
       whitelist: true,
       exceptionFactory: (validationErrors: ValidationError[] = []) => {
         // return constructErrorResponse(validationErrors)
+        console.log("----------------------------------")
+        console.log("----------------------------------")
+        console.log("----------------------------------")
+        console.log("----------------------------------")
+        console.log("----------------------------------")
         return new ValidationFailedException(validationErrors);
       },
     })

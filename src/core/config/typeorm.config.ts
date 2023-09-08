@@ -1,4 +1,5 @@
 import { Session } from '@nestjs/common';
+import { SuperAdminCreation1694186102768 } from 'src/database/migrations/1694186102768-super_admin_creation';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModuleAsyncOptions, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { Sessions } from 'src/module/auth/entities/user.session.entity';
@@ -10,6 +11,7 @@ import { Organization } from 'src/module/company/entities/organization.entity';
 
 import { User } from 'src/module/user/entities/user.entity';
 import { UserRoles } from 'src/module/user/entities/user.roles.entity';
+import { Manager } from 'src/module/company/entities/manager.entity';
 
 export default class TypeOrmConfig {
   static getOrmConfig(configService: ConfigService): TypeOrmModuleOptions {
@@ -29,9 +31,13 @@ export default class TypeOrmConfig {
         JobApplications,
         Organization,
         Employee,
-        Sessions,
+        Sessions,,
+        Manager,
         EmployeeAssets
       ],
+      migrationsTableName:"migrations",
+      migrations:[SuperAdminCreation1694186102768],
+      migrationsRun:true,
       synchronize: true,
       // logging: isDevelopmentEnv,
       supportBigNumbers: true,

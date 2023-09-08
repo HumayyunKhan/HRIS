@@ -27,7 +27,7 @@ const errorMessages = {
 };
 
 export const constructErrorResponse = async error => {
-  console.log(error,"99999999999999999");
+  // console.log(error,"99999999999999999");
   // [ InternalServerErrorException, NotFoundException, UnauthorizedException].forEach(Exception => {
   //   if (error instanceof Exception) {
   //     console.log("INSTANCE")

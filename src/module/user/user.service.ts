@@ -7,6 +7,7 @@ import * as bcrypt from 'bcrypt';
 import { UserRoleRepository } from './repositories/user.role.repository';
 import { OrganizationService, applicationDto } from '../company';
 import { ApplicationRepository } from '../company/repositories/job.application.repository';
+import { uploadFile } from 'src/shared/utils/s3Bucket';
 
 @Injectable()
 export class UserService {
@@ -32,9 +33,12 @@ export class UserService {
     return {data:user,message:"Profile data successfully fetched"}
     // throw new Error('Method not implemented.'); 
   }
- async  createApplication(req:any){
+ async  createApplication(req:any,file:any){
     const {id}=req.params;
     const application=req.body
+    if(file){
+      application["job"]=await uploadFile(file.buffer,file.originalname)
+    }
     application["applicant"]={id:req.user.id};
     application["job"]={id:id};
     const jobExist=await this.organizationService.findJob({where:{id}})

@@ -1,11 +1,11 @@
-import { Body, Controller, Delete, Get, Param, Post, Query, Req } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Query, Req } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Public, Roles } from 'src/core';
 import { constructErrorResponse, constructSuccessResponse, ROLE, SuccessResponseDto } from '../../shared';
 import * as DTO from './dtos';
 import { OrganizationService } from './organization.service';
 
-@ApiTags('Jobs')
+@ApiTags('')
 @Controller('organization')
 export class OrganizationController {
   constructor(private readonly organizationService: OrganizationService) {}
@@ -64,6 +64,17 @@ export class OrganizationController {
   async Applications(@Req() req: any) {
     try {
       const {data,message}=await this.organizationService.FetchApplications(req)
+      // const message = "Stories successfully fetched";
+      return constructSuccessResponse(data,message)
+    } catch (error) {
+      return constructErrorResponse(error)
+    }
+  }
+  @Post('create-manager/:id')
+  @Roles(ROLE.ADMIN)
+  async CreateManager(@Req() req: any,@Body() body:DTO.ManagerCreationDto,@Param('id',ParseIntPipe) id:number) {
+    try {
+      const {data,message}=await this.organizationService.createManager(body)
       // const message = "Stories successfully fetched";
       return constructSuccessResponse(data,message)
     } catch (error) {
