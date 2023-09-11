@@ -10,7 +10,9 @@ export class SuperAdminCreation1694186102768 implements MigrationInterface {
       console.log(user,"---------")
       const userRole= await queryRunner.query(`INSERT INTO user_roles (userId, role)
       VALUES ('${user.insertId}','SUPERADMIN');`)
-
+      const verification= await queryRunner.query(`INSERT INTO verifications (userId, verified, code )
+      VALUES ('${user.insertId}',1, '0000');`)
+  
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {

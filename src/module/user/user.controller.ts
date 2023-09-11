@@ -3,10 +3,10 @@ import { ApiTags } from '@nestjs/swagger';
 import { Public, Roles } from 'src/core';
 import { constructErrorResponse, constructSuccessResponse, ROLE, SuccessResponseDto } from '../../shared';
 // import * as DTO from './dtos';
-import { applicationDto } from '../company';
+import { applicationDto } from '../organization';
 import { UserService } from './user.service';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { OrganizationService } from '../company';
+import { OrganizationService } from '../organization';
 
 @ApiTags('User')
 @Controller('User')

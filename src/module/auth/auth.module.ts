@@ -7,11 +7,13 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { JwtStrategy } from './strategies';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { UserSessionsRepository } from '../user/repositories/user.sessions.repository';
+import { UserVerificationRepository } from '../user/repositories/user.verification.repository';
 
 @Module({
   imports: [
     UserModule,
-    TypeOrmModule.forFeature([UserRepository]),
+    TypeOrmModule.forFeature([UserRepository,UserSessionsRepository,UserVerificationRepository]),
     PassportModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],

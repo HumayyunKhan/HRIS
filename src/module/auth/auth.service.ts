@@ -1,14 +1,15 @@
-import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { MapperUtil, ROLE, UnAuthorizedException } from '../../shared';
 import { UserDto, CreateUserDto, UserService, VerifyUserDto, UserRepository } from '../user';
-import { AuthPayload, AuthTokenDto, JwtPayload, LoginDto } from './dtos';
-import { User } from '../user/entities/user.entity';
+import { AuthPayload, AuthTokenDto, JwtPayload, LoginDto,OtpDto } from './dtos';
 import {issue, verify} from "./guards/jwt/index"
 import { SendEmail } from 'src/core/services/sendgrid.service';
 import { uploadFile } from 'src/shared/utils/s3Bucket';
+import { UserVerificationRepository } from '../user/repositories/user.verification.repository';
+import { UserSessionsRepository } from '../user/repositories/user.sessions.repository';
 
 @Injectable()
 export class AuthService {
@@ -26,6 +27,7 @@ return {data:data,message:"User successfully created"}
     
   }
 
+
   test(req: any) {
     return {data:"HELLO",message:"WORKING ON AUTH"}
   }
@@ -34,21 +36,24 @@ return {data:data,message:"User successfully created"}
     private readonly configService: ConfigService,
     private readonly userService: UserService,
     private readonly userRepo: UserRepository,
+    private readonly verificationRepo: UserVerificationRepository,
+    private readonly sessionRepo: UserSessionsRepository,
     
   ) {}
 
   async verifyUser(verifyUserDto: VerifyUserDto): Promise<AuthTokenDto> {
     const user = await this.userService.createAndGetUser(verifyUserDto);
-    return this.generateAuthToken(MapperUtil.map(UserDto, user), [ROLE.USER], user.phone);
+    return await this.generateAuthToken(MapperUtil.map(UserDto, user), [ROLE.USER], user.phone);
   }
 
-  async createUser(createUserDto: CreateUserDto): Promise<AuthTokenDto> {
+  async createUser(createUserDto: CreateUserDto) {
     console.log("----------------------inside CRAETE USER FUNCTION -------------------")
     createUserDto.password = await this.hashPassword(createUserDto.password);
     console.log("PASSWORD",createUserDto.password)
     const user = await this.userService.createUser(createUserDto);
     console.log(user,"------------------")
-    return this.generateAuthToken(MapperUtil.map(UserDto, user), [ROLE.USER], user.phone);
+    return user
+    // return await this.generateAuthToken(MapperUtil.map(UserDto, user), [ROLE.USER], user.phone);
   }
 
   async authenticateUser(loginDto: LoginDto): Promise<AuthTokenDto> {
@@ -56,28 +61,34 @@ return {data:data,message:"User successfully created"}
     user.roles=user.roles.map((u:any)=>u.role)
     console.log(user)
     await this.validateCredentials(loginDto, user);
-    return this.generateAuthToken(MapperUtil.map(UserDto, user), user.roles, user.phone);
+    return await this.generateAuthToken(MapperUtil.map(UserDto, user), user.roles, user.phone);
   }
 
-  getAuthToken(data: any, authPayload: AuthPayload): AuthTokenDto {
+  async getAuthToken(data: any, authPayload: AuthPayload): Promise<AuthTokenDto> {
     const subject = { sub: authPayload.id };
     const payload: JwtPayload = MapperUtil.map(JwtPayload, authPayload);
     payload.sub = authPayload.id;
 
     const tokenExpiry = this._getJwtExpiryByRole(authPayload.roles[0]);
+   const accessToken= this.jwtService.sign({ ...payload, ...subject }, { expiresIn: tokenExpiry.accessTokenExpiry })
+
+    const sessionExist=await this.sessionRepo.findOne({where:{user:{id:parseInt(authPayload.id)}}})
+    if(sessionExist)await this.sessionRepo.delete(sessionExist.id)
+    const newSession = this.sessionRepo.create({token:accessToken,user:{id:parseInt(payload.sub)}})
+  await this.sessionRepo.save(newSession)
 
     const authToken: AuthTokenDto = {
-      accessToken: this.jwtService.sign({ ...payload, ...subject }, { expiresIn: tokenExpiry.accessTokenExpiry }),
+      accessToken: accessToken,
       authInfo: data,
     };
     return authToken;
   }
 
-  generateAuthToken(data: any, role: [ROLE], username: string): AuthTokenDto {
+ async generateAuthToken(data: any, role: any, username: string): Promise<AuthTokenDto> {
     const authPayload = MapperUtil.map(AuthPayload, data);
     authPayload.roles = role;
     authPayload.username = username;
-    return this.getAuthToken(data, authPayload);
+    return await this.getAuthToken(data, authPayload);
   }
 
   async validateCredentials(loginDto: LoginDto, data: any): Promise<boolean> {
@@ -95,6 +106,22 @@ return {data:data,message:"User successfully created"}
     }
     return true;
   }
+  async validateCode(data: any) {
+    console.log(data.code)
+    console.log(data.email)
+
+    const verification = await this.verificationRepo.findOne({where:{ user:{id:data.userId}, code: data.code }})
+    console.log(verification,"------------------------")
+    const currentTime = new Date();
+    if (!verification) {
+      throw new UnAuthorizedException('OTP INVALID');
+    }
+
+      if (verification.expiresAt <= currentTime) throw new UnauthorizedException("Otp expired")
+      if (verification.verified == true) throw new BadRequestException("Already verified")
+    console.log(verification,"00000000000000000")
+
+  }  
 
   async hashPassword(password: string): Promise<string> {
     const hash=await bcrypt.hash(password, 10);
@@ -111,8 +138,7 @@ return {data:data,message:"User successfully created"}
       accessTokenExpiry: this.configService.get('jwt.accessTokenExpiresInSec'),
     };
   }
-
-  
+ 
   async forgotPassword(body: any) {
     const { email } = body
     const user = await this.userService.findByEmail(email);
@@ -158,5 +184,17 @@ return {data:data,message:"User successfully created"}
 
     return {}
   }
+  async optAuthenticate(data: OtpDto) {
+    let user:any= await this.userService.findByEmail(data.email);
+    if(!user)throw new UnAuthorizedException("USER NOT FOUND")
+    console.log(user)
+    user.roles=user.roles.map((u:any)=>u.role)
+    
+    console.log(user)
+    await this.validateCode({userId:user.id,code:data.code,email:data.email});
+    return await this.generateAuthToken(MapperUtil.map(UserDto, user), user.roles, user.phone);
+ 
+  }
+
 
 }

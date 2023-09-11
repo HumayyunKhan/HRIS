@@ -1,13 +1,14 @@
 import { BaseEntity } from '../../../core/entity/base.entity';
-import { BeforeInsert, Column, Entity, OneToMany, OneToOne } from 'typeorm';
+import { BeforeInsert, Column, Entity, JoinColumn, OneToMany, OneToOne } from 'typeorm';
 import { USER } from '../../../shared';
 import { UserRoles } from './user.roles.entity';
-import { Jobs } from 'src/module/company/entities/job.entity';
-import { Organization } from 'src/module/company/entities/organization.entity';
-import { JobApplications } from 'src/module/company/entities/job.applications.entity';
-import { Employee } from 'src/module/company/entities/employee.entity';
+import { Jobs } from 'src/module/organization/entities/job.entity';
+import { Organization } from 'src/module/organization/entities/organization.entity';
+import { JobApplications } from 'src/module/organization/entities/job.applications.entity';
+import { Employee } from 'src/module/organization/entities/employee.entity';
 import { Sessions } from 'src/module/auth/entities/user.session.entity';
-import { Manager } from 'src/module/company/entities/manager.entity';
+import { Manager } from 'src/module/organization/entities/manager.entity';
+import { Verifications } from 'src/module/auth/entities/user.verification.entity';
 
 @Entity({ name: 'users' })
 export class User extends BaseEntity {
@@ -44,6 +45,7 @@ export class User extends BaseEntity {
 
   @OneToMany(() => UserRoles, (role) => role.user)
   roles: UserRoles[]
+
   @OneToMany(() => Jobs, (job) => job.employer)
   jobs: Jobs[]
 
@@ -58,8 +60,17 @@ export class User extends BaseEntity {
   @OneToMany(() => Manager, (man) => man.user)
   managing: Manager;
 
+
   @OneToOne(() => Sessions, (session) => session.user)
+  // @JoinColumn()
   session: Sessions
+
+  @OneToOne(() => Verifications, (verf) => verf.user)
+  // @JoinColumn()
+  verification: Verifications;
+
+  // @OneToOne(() => Verifications, (ver) => ver.user)
+  // verification: Verifications 
 
 
   @BeforeInsert()

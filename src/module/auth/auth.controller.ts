@@ -2,7 +2,7 @@ import { Body, Controller, Get, HttpCode, HttpStatus, Post, Query, Req, Uploaded
 import { ApiTags } from '@nestjs/swagger';
 import { Public } from '../../core';
 import { ApiResponseDto, constructErrorResponse, constructSuccessResponse } from '../../shared';
-import { CreateUserDto } from '../user';
+import { CreateUserDto, UserService } from '../user';
 import * as DTO from './dtos';
 import { FileInterceptor } from '@nestjs/platform-express';
 
@@ -13,7 +13,8 @@ import { query } from 'express';
 @Public()
 @Controller('Auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: AuthService,
+    private readonly userService: UserService) {}
 
 
   @Get('/')
@@ -32,13 +33,14 @@ export class AuthController {
     try {
     
       const data = await this.authService.registration(req.body,file); 
-      const message = "Stories successfully fetched";
+      const message = "You account have been registered. Please verify you account";
       return constructSuccessResponse(data, message)
     } catch (error) {
       console.log(error)
       return constructErrorResponse(error)
     }
   }
+
   @Post('/signin')
   async login(@Req() req: any,) {
     try {
@@ -68,6 +70,32 @@ export class AuthController {
       const message = "Stories successfully fetched";
       return constructSuccessResponse(data, message)
     } catch (error) {
+      return constructErrorResponse(error)
+    }
+  }
+
+  @Public()
+  @Post('resend-code')
+  async fetchOtp(@Body() body:DTO.EmailDto, @Req() req: any) {
+
+    try {
+      const data = await this.userService.fetchOtp(body)
+      return constructSuccessResponse(data,"Otp has been sent to you email")
+    } catch (error) {
+      return constructErrorResponse(error)
+    }
+  }
+
+
+
+  @Public()
+  @Post('user-authenticate')
+  async optAuthenticate(@Body() body: DTO.OtpDto, @Req() req: any) {
+    try {
+      const data = await this.authService.optAuthenticate(body)
+      return constructSuccessResponse(data)
+    } catch (error) {
+      console.log(error)
       return constructErrorResponse(error)
     }
   }

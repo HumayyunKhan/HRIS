@@ -1,0 +1,516 @@
+{
+	"info": {
+		"_postman_id": "ebe310cb-35c8-4883-a708-924023303481",
+		"name": "HRIS",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23137824"
+	},
+	"item": [
+		{
+			"name": "AUTH",
+			"item": [
+				{
+					"name": "SIGNUP",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "d",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "hassan",
+									"type": "text"
+								},
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/Users/DELL/Pictures/Screenshots/Screenshot (1).png"
+								},
+								{
+									"key": "email",
+									"value": "d@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "country",
+									"value": "Pakistan",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}auth/signup",
+							"host": [
+								"{{url}}auth"
+							],
+							"path": [
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "LOGIN",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\":\"superadmin@gmail.com\",\r\n    \"password\":\"12345\"\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}auth/signin",
+							"host": [
+								"{{url}}auth"
+							],
+							"path": [
+								"signin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "FORGOT PASSWORD",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\":\"b@gmail.com\"\r\n   \r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}auth/forgot-password",
+							"host": [
+								"{{url}}auth"
+							],
+							"path": [
+								"forgot-password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "RESET PASSWORD",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"password\":\"b@gmail.com\"\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}auth/reset-password?token=wdsadadasdsadasdasdsads",
+							"host": [
+								"{{url}}auth"
+							],
+							"path": [
+								"reset-password"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "wdsadadasdsadasdasdsads"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ADMIN",
+			"item": [
+				{
+					"name": "ADD-ROLE",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userId\":1,\r\n    \"role\":\"MANAGER\"\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}admin/add-role",
+							"host": [
+								"{{url}}admin"
+							],
+							"path": [
+								"add-role"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "USER",
+			"item": [
+				{
+					"name": "PERSONAL PROFILE",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userId\":1,\r\n    \"role\":\"MANAGER\"\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}user/profile",
+							"host": [
+								"{{url}}user"
+							],
+							"path": [
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "VIEW PROFILE",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userId\":1,\r\n    \"role\":\"MANAGER\"\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}user/profile/2",
+							"host": [
+								"{{url}}user"
+							],
+							"path": [
+								"profile",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ORGANIZATION",
+			"item": [
+				{
+					"name": "JOBS",
+					"item": [
+						{
+							"name": "FETCH JOBS",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"userId\":1,\r\n    \"role\":\"MANAGER\"\r\n\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}organization/jobs",
+									"host": [
+										"{{url}}organization"
+									],
+									"path": [
+										"jobs"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CREATE JOB",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"title\": \"REACT DEVELOPER\",\"companyName\":\"TECHMANIA\",\"position\":\"Junior Developer\",\"vacancies\":1\r\n\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}organization/create-job",
+									"host": [
+										"{{url}}organization"
+									],
+									"path": [
+										"create-job"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "CREATE JOB APPLICATION",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "file",
+											"type": "file",
+											"src": []
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url}}user/job/3/apply",
+									"host": [
+										"{{url}}user"
+									],
+									"path": [
+										"job",
+										"3",
+										"apply"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "DELET JOB APPLICATION",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "file",
+											"type": "file",
+											"src": []
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url}}user/job/5/cancel-application",
+									"host": [
+										"{{url}}user"
+									],
+									"path": [
+										"job",
+										"5",
+										"cancel-application"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "MANAGER",
+					"item": [
+						{
+							"name": "CREATE MANAGER",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"user\":{\"id\":2},\r\n    \"organization\":{\"id\":2}\r\n    \r\n\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}organization/create-manager/1",
+									"host": [
+										"{{url}}organization"
+									],
+									"path": [
+										"create-manager",
+										"1"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "ORGS",
+					"item": [
+						{
+							"name": "CREATE ORGANIZATION",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\":\"ARHAMSOFT\",\r\n    \"status\":\"ACTIVE\",\r\n    \"country\":\"LAHORE\",\r\n    \"address\":\"LAHORE JOHR TOWN\",\r\n    \"ceo\":{\"id\":2}\r\n    \r\n\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}admin/create-organization",
+									"host": [
+										"{{url}}admin"
+									],
+									"path": [
+										"create-organization"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "UPDATE ORGANIZATION",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\":\"TECHMANIA\",\r\n    \"status\":\"ACTIVE\",\r\n    \"country\":\"PAKISTAN\",\r\n    \"address\":\"LAHORE JOHR TOWN\",\r\n    \"manager\":{\"id\":3}\r\n    \r\n\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}admin/create-organization",
+									"host": [
+										"{{url}}admin"
+									],
+									"path": [
+										"create-organization"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "UPDATE ORGANIZATION Copy",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\":\"TECHMANIA\",\r\n    \"status\":\"ACTIVE\",\r\n    \"country\":\"PAKISTAN\",\r\n    \"address\":\"LAHORE JOHR TOWN\",\r\n    \"manager\":{\"id\":3}\r\n    \r\n\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}admin/create-organization",
+									"host": [
+										"{{url}}admin"
+									],
+									"path": [
+										"create-organization"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjE3LCJuYW1lIjoic3VwZXIiLCJ1c2VybmFtZSI6IiIsInJvbGVzIjpbIlNVUEVSQURNSU4iXSwiaWF0IjoxNjk0MTg4NTMwLCJleHAiOjE2OTQ3ODg1MzB9.UWsm1yRDtiCXy2ZCVQBToyo8oRhgJrx-PoPKs0phLV8",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "url",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

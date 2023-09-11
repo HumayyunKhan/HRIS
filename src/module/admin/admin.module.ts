@@ -5,7 +5,7 @@ import { AdminController } from './admin.controller';
 import { AdminService } from './admin.service';
 import { AuthModule } from '../auth';
 import { UserModule, UserService } from '../user';
-import { OrganizationModule } from '../company';
+import { OrganizationModule } from '../organization';
 
 @Module({
   imports: [AuthModule,UserModule, TypeOrmModule.forFeature([]),OrganizationModule],

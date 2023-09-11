@@ -7,3 +7,17 @@ export class LoginDto {
   @IsNotEmpty()
   password: string;
 }
+export class EmailDto {
+  @IsNotEmpty()
+  email: string;
+}
+
+export class OtpDto {
+  @IsNotEmpty()
+  email: string;
+
+  @IsNotEmpty()
+  code: string;
+}
+
+

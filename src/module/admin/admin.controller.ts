@@ -6,7 +6,7 @@ import { AdminService } from './admin.service';
 import { UserService } from '../user';
 
 import { rolePayload } from './dtos/role.dto';
-import { CreateOrgDto, OrganizationService, UpdateOrgDto } from '../company';
+import { CreateOrgDto, OrganizationService, UpdateOrgDto } from '../organization';
 
 @ApiTags('admin')
 @Controller('admin')

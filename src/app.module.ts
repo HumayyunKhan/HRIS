@@ -6,7 +6,7 @@ import { CoreModule, RolesGuard } from './core';
 import { SharedModule } from './shared';
 import { UserModule } from './module/user';
 import { AdminModule } from './module/admin';
-import { OrganizationModule } from './module/company';
+import { OrganizationModule } from './module/organization';
 
 @Module({
   imports: [
